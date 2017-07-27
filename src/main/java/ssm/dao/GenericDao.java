@@ -3,6 +3,7 @@ package ssm.dao;
 import ssm.util.Pagination;
 
 import java.io.Serializable;
+import java.util.List;
 
 public interface GenericDao<T extends Serializable, ID extends Number> {
 
@@ -19,6 +20,9 @@ public interface GenericDao<T extends Serializable, ID extends Number> {
     T query(String statement, Object parameter);
 
     T queryById(ID id);
+    List<T> queryList(String statement, Object parameter);
+
+    List<T> queryAll();
 
     Pagination<T> query(String statement, Object parameter, int currentPage);
 

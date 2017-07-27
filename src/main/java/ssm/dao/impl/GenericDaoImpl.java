@@ -64,6 +64,16 @@ public class GenericDaoImpl<T extends Serializable, ID extends Number> implement
         return sqlSession.selectOne(getStatement("queryById"), id);
     }
 
+
+    @Override
+    public List<T> queryList(String statement, Object parameter) {
+        return sqlSession.selectList(getStatement(statement), parameter);
+    }
+
+    @Override
+    public List<T> queryAll() {
+        return sqlSession.selectList(getStatement("queryAll"));
+    }
     @Override
     public Pagination<T> query(String statement, Object parameter, int currentPage) {
         return getPagination(statement, parameter, currentPage);

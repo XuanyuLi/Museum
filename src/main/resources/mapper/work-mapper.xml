@@ -65,4 +65,10 @@
         FROM db_ssm.work w LEFT OUTER JOIN db_ssm.museum m
         ON w.museumId = m.id
     </select>
+
+    <select id="queryWorksByMuseumId" parameterType="int" resultType="work">
+    SELECT *
+    FROM db_ssm.work
+    WHERE museumId = #{museumId};
+    </select>
 </mapper>

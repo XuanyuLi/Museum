@@ -5,17 +5,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import ssm.model.Museum;
+import ssm.model.Work;
 import ssm.service.MuseumService;
+import ssm.service.WorkService;
+import ssm.util.Pagination;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("museum")
 public class MuseumController extends BaseController {
 
     private final MuseumService museumService;
+    private final WorkService workService;
 
     @Autowired
-    public MuseumController(MuseumService museumService) {
+    public MuseumController(MuseumService museumService,WorkService workService) {
         this.museumService = museumService;
+        this.workService = workService;
     }
 
     @RequestMapping("create")
@@ -53,9 +60,15 @@ public class MuseumController extends BaseController {
         return "redirect:/museum/edit.jsp";
     }
 
-    @RequestMapping("queryMuseums/{currentPage")
+    @RequestMapping("queryMuseums/{currentPage}")
     private String queryMuseums(@PathVariable int currentPage) {
-        session.setAttribute("museum",museumService.query("queryMuseums",null, currentPage));
+        Pagination<Museum> pagination = museumService.query("queryMuseums", null, currentPage);
+        for (int i = 0; i < pagination.getList().size(); i++) {
+            int museumId = pagination.getList().get(i).getId();
+            List<Work> works = workService.queryList("queryWorksByMuseumId", museumId);
+            pagination.getList().get(i).setWorks(works);
+        }
+        session.setAttribute("pagination", pagination);
         return "redirect:/museum/museums.jsp";
     }
 

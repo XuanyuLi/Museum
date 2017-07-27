@@ -26,7 +26,7 @@
             <tr>
                 <td>${vs.count}</td>
                 <td>${work.title}</td>
-                <td>${work.picture}</td>
+                <td><img src="${ctx}/assets/photo/${work.picture}" alt="${work.picture}"></td>
                 <td>${work.artist}</td>
                 <td>${work.year}</td>
                 <td>${work.museumId}</td>

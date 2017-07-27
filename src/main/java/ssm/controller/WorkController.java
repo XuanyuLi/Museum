@@ -4,8 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.multipart.MultipartFile;
 import ssm.model.Work;
 import ssm.service.WorkService;
+import ssm.util.Constant;
+
+import java.io.File;
+import java.io.IOException;
 
 @Controller
 @RequestMapping("work")
@@ -13,13 +18,21 @@ public class WorkController extends BaseController {
 
     private final WorkService workService;
 
+
     @Autowired
     public WorkController(WorkService workService) {
         this.workService = workService;
     }
 
     @RequestMapping("create")
-    private String create(Work work) {
+    private String create(Work work ,@RequestParam MultipartFile pictureFile) {
+        String photoPath = application.getRealPath(Constant.UPLOAD_PHOTO_PATH);
+        try {
+            pictureFile.transferTo(new File(photoPath,pictureFile.getOriginalFilename()));
+            work.setPicture(pictureFile.getOriginalFilename());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         workService.create(work);
         return "redirect:/work/queryAll";
     }
