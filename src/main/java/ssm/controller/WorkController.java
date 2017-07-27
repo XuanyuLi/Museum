@@ -1,7 +1,5 @@
 package ssm.controller;
 
-import org.apache.commons.fileupload.FileUpload;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -10,9 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 import ssm.model.Work;
 import ssm.service.WorkService;
 import ssm.util.Constant;
+import ssm.util.FileUpload;
 
-import java.io.File;
-import java.io.IOException;
 
 @Controller
 @RequestMapping("work")
@@ -48,7 +45,11 @@ public class WorkController extends BaseController {
     }
 
     @RequestMapping("modify")
-    private String modify(Work work) {
+    private String modify(Work work,@RequestParam MultipartFile pictureFile) {
+        if (!pictureFile.isEmpty()) {
+            String photoPath = application.getRealPath(Constant.UPLOAD_PHOTO_PATH);
+            work.setPicture(FileUpload.upload(photoPath, pictureFile));
+        }
         workService.modify(work);
         return "redirect:/work/queryAll";
     }
