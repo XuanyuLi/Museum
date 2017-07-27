@@ -1,5 +1,7 @@
 package ssm.controller;
 
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,21 +20,23 @@ public class WorkController extends BaseController {
 
     private final WorkService workService;
 
-
     @Autowired
     public WorkController(WorkService workService) {
         this.workService = workService;
     }
 
+    private static String getPhotoFileName() {
+        return Long.toString(System.nanoTime());
+    }
+
+    public void main(String[] args) {
+        System.out.println(getPhotoFileName());
+    }
+
     @RequestMapping("create")
-    private String create(Work work ,@RequestParam MultipartFile pictureFile) {
+    private String create(Work work, @RequestParam MultipartFile pictureFile) {
         String photoPath = application.getRealPath(Constant.UPLOAD_PHOTO_PATH);
-        try {
-            pictureFile.transferTo(new File(photoPath,pictureFile.getOriginalFilename()));
-            work.setPicture(pictureFile.getOriginalFilename());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        work.setPicture(ssm.util.FileUpload.upload(photoPath,pictureFile));
         workService.create(work);
         return "redirect:/work/queryAll";
     }
@@ -68,9 +72,11 @@ public class WorkController extends BaseController {
 
     @RequestMapping("queryWorks/{currentPage}")
     private String queryWorks(@PathVariable int currentPage) {
-        session.setAttribute("pagination",workService.query("queryWorks",null,currentPage));
+        session.setAttribute("pagination", workService.query("queryWorks", null, currentPage));
         return "redirect:/work/works.jsp";
     }
+
+
     @RequestMapping("queryWorks")
     private String queryWorks() {
         return queryWorks(1);

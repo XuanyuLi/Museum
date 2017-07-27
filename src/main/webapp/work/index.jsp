@@ -10,4 +10,5 @@
         <p><a href="${ctx}/work/queryAll">LIST</a></p>
         <p><a href="${ctx}/work/queryWorks">作品->博物馆</a></p>
     </body>
+    ${requestScope.message}
 </html>
